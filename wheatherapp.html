@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+<body>
+    <h1 class="display-1 text-center mb-sm-4">weather app</h1>
+    <label class="form-label mb-4 fw-bold fs-3 text-uppercase" for="city">select city:</label>
+    <select class="form-select" name="city" id="city">
+
+        <option value="">--select the city---</option>
+        <option value="madurai">madurai</option>
+        <option value="palani">palani</option>
+        <option value="chennai">chennai</option>
+        <option value="coimbatore">coimbatore</option>
+        <option value="dindigul">dindigul</option>
+
+    </select>
+    <h1 class="display-5 text-uppercase mt-5 mb-4">selected city weather details:</h1>
+<div class="justify-content-center align-content-center">
+
+<p id="cityname"><span class="text-uppercase text-dark fw-bold me-1">city:</span>Madurai</city:madurai></p>
+<p id="temperature"><span class="text-uppercase text-dark fw-bold me-1">temperature:</span>25 °</p>
+<p id="condition"><span class="text-uppercase text-dark fw-bold me-1">condition:</span>sunny</p>
+</div>
+<script>
+ 
+ const weatherdata={
+    madurai:{
+        temperature:"28°C",
+        condition:"sunny",
+        bgcolor:"bg-warning"
+    },
+    palani:{
+        temperature:"38°C",
+        condition:"sunny",
+        bgcolor:"bg-warning"
+    },
+    chennai:{
+        temperature:"26°C",
+        condition:"cloudy",
+        bgcolor:"bg-secondary"
+    },
+    coimbatore:{
+        temperature:"30°C",
+        condition:"sunny",
+        bgcolor:"bg-warning"
+    },
+    dindigul:{
+        temperature:"33°C",
+        condition:"rainy",
+        bgcolor:"bg-primary"
+    },
+
+ };
+
+ const cityname=document.getElementById("cityname");
+ const cityselect=document.getElementById("city");
+ const temperature=document.getElementById("temperature");
+ const condition=document.getElementById("condition");
+const body=document.body;
+
+function updatedynamically(city){
+const weathername=weatherdata[city];
+cityname.textContent=city.charAt(0).toUpperCase()+city.slice(1);
+
+temperature.textContent=`Temperature: ${weathername.temperature}`;
+condition.textContent=`Condition: ${weathername.condition}`;
+
+body.classList.remove('bg-warning','bg-primary','bg-secondary');
+body.classList.add(weathername.bgcolor);
+}
+
+cityselect.addEventListener("change",(e)=>{
+    const selected_city = e.target.value;
+    updatedynamically(selected_city)
+});
+
+updatedynamically(cityselect.value);
+</script>
+</body>
+</html>
