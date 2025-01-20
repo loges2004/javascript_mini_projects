@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card-area {
+            min-height: 200px;
+            height: 100%;
+            border: 2px dashed black;
+            margin-top: 20px;
+            padding: 40px;
+        }
+        .cart-area.drag-over {
+            background-color: #88177b;
+        }
+        .product {
+            cursor: grab;
+        }
+
+    </style>
+</head>
+
+<body class="bg-light">
+    <div class="bg-black mb-1 ">
+
+        <h2 class="text-center pt-4 pb-4 text-white-50">Drag-and-Drop Shopping Cart</h2>
+    </div>
+
+    <div class="container justify-content-between">
+
+        <h2 class="display-4 text-uppercase text-center">products</h2>
+        <div class="d-flex flex-wrap gap-5 mt-3">
+            
+            <div class="card product col-6 col-sm-4 col-md-3 col-lg-2" draggable="true" data-name="product1" data-price="20">
+                <img src="image/th (2).jpeg" alt="adalimumab" class="card-img-top mt-2 img-fluid imag rounded">
+                <div class="card-body text-center">
+                    <h5 class="h5 card-title">adalimumab</h5>
+                    <p class="card-text">$20</p>
+                </div>
+            </div>
+            <div class="card product col-6 col-sm-4 col-md-3 col-lg-2" draggable="true" data-name="product2" data-price="30">
+                <img src="image/th (3).jpeg" alt="apixaban" class="card-img-top mt-2 img-fluid">
+                <div class="card-body text-center">
+                    <h5 class="h5 card-title">apixaban</h5>
+                    <p class="card-text">$30</p>
+                </div>
+            </div>
+            <div class="card product col-6 col-sm-4 col-md-3 col-lg-2" draggable="true" data-name="product3" data-price="25">
+                <img src="image/th (4).jpeg" alt="etanercept" class="card-img-top mt-2 img-fluid">
+                <div class="card-body text-center">
+                    <h5 class="h5 card-title">etanercept</h5>
+                    <p class="card-text">$25</p>
+                </div>
+            </div>
+            <div class="card product col-6 col-sm-4 col-md-3 col-lg-2 " draggable="true" data-name="product4" data-price="20">
+                <img src="image/th (5).jpeg" alt="ustekinumab" class="card-img-top mt-2 img-fluid">
+                <div class="card-body text-center">
+                    <h5 class="h5 card-title">ustekinumab</h5>
+                    <p class="card-text">$20</p>
+                </div>
+            </div>
+            <div class="card product col-6 col-sm-4 col-md-3 col-lg-2" draggable="true" data-name="product5" data-price="40">
+                <img  src="image/th (6).jpeg" alt="pembrolizumab" class="card-img-top mt-2 img-fluid">
+                <div class="card-body text-center">
+                    <h5 class="h5 card-title">pembrolizumab</h5>
+                    <p class="card-text">$40</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="col-12 cols-md-6">
+            <h4 class="display-4 mt-4 mb-4 text-center">Shopping cart</h4>
+            <div id="cart" class="card-area">
+                <p class="text-muted w-100"> drag items here</p>
+            </div>
+
+            <div class="mt-3 mb-5 mx-4 ">
+                <h5>Total Price: $<span id="total-price">0</span></h5>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+    const cartArea=document.getElementById("cart");
+    const total_price=document.getElementById("total-price");
+
+    let total=0;
+
+    document.querySelectorAll(".product").forEach(product => {
+        product.addEventListener("dragstart",(e)=>{
+            e.dataTransfer.setData("name",product.dataset.name);
+            e.dataTransfer.setData("price",product.dataset.price);
+
+        });
+    });
+    
+    cartArea.addEventListener("dragover",(e)=>{
+        e.preventDefault();
+        cartArea.classList.add("drag-over");
+    });
+
+    cartArea.addEventListener("dragleave",(e)=>{
+        e.preventDefault();
+        cartArea.classList.remove("drag-over");
+    });
+
+    cartArea.addEventListener("drop",(e)=>{
+        e.preventDefault();
+        cartArea.classList.remove("drag-over");
+    
+
+  const name =e.dataTransfer.getData("name");
+  const price =parseFloat(e.dataTransfer.getData("price"));
+
+  addProductToCart(name,price);
+});
+  function addProductToCart(name, price) {
+           const existingProduct = Array.from(cartArea.children).find(
+                (child) => child.dataset.name === name
+            );
+
+            if (existingProduct) {
+                const quantityElement = existingProduct.querySelector(".quantity");
+                const quantity = parseInt(quantityElement.textContent);
+                quantityElement.textContent = quantity + 1;
+            } else {
+                const cartItem = document.createElement("div");
+                cartItem.className = "d-flex justify-content-between align-items-center mb-2";
+                cartItem.dataset.name = name;
+                cartItem.innerHTML = `
+                    <span>${name} (<span class="quantity">1</span>)</span>
+                    <span>$${price.toFixed(2)}</span>
+                    <button class="btn btn-sm btn-danger remove-btn">Remove</button>
+                `;
+
+                cartItem.querySelector(".remove-btn").addEventListener("click", () => {
+                    const quantityElement = cartItem.querySelector(".quantity");
+                    const quantity = parseInt(quantityElement.textContent);
+
+                    if (quantity > 1) {
+                        quantityElement.textContent = quantity - 1;
+                    } else {
+                        cartItem.remove();
+                    }
+
+                    updatetotal(-price);
+                });
+
+                cartArea.appendChild(cartItem);
+            }
+
+            updatePrice(price);
+        }
+
+        function updatePrice(amount) {
+            total += amount;
+            total_price.textContent = total.toFixed(2);
+        }
+    </script>
+
+
+
+</body>
+
+</html>
